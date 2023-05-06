@@ -176,7 +176,7 @@ func main() {
 		tea.WithMouseCellMotion(), // turn on mouse support, so we can track the mouse wheel
 	)
 
-	if err := p.Start(); err != nil {
+	if _, err := p.Run(); err != nil {
 		log.Fatal("could not run program:", err)
 	}
 }
