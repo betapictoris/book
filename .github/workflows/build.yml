@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest] # OSes to run on
-        version: [1.19] # Go version to use
+        version: [1.20] # Go version to use
 
     needs: lint
     runs-on: ${{ matrix.os }}
