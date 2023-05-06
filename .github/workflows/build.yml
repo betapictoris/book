@@ -36,6 +36,9 @@ jobs:
         with:
           go-version: ${{ matrix.version }}
 
+      - name: Get Go dependencies
+        run: go mod download
+
       - name: Build (Directories)
         run: mkdir build
 
