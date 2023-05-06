@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/charmbracelet/log"
 	"github.com/taylorskalyo/goreader/epub"
@@ -126,9 +127,17 @@ func (b Bubble) footerView() string {
 }
 
 func main() {
+	fileName := ""
+
+	if len(os.Args) >= 2 {
+		fileName = os.Args[1]
+	} else {
+		log.Fatal("Usage: book <path to file>")
+	}
+
 	log.Info("Reading file...")
 
-	reader, err := epub.OpenReader("books/aliceInWonderland.de.epub")
+	reader, err := epub.OpenReader(fileName)
 	if err != nil {
 		log.Fatal("Failed to read", "error", err)
 	}
