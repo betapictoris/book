@@ -154,6 +154,9 @@ func main() {
 				log.Fatal("Failed to create item reader", "error", err)
 			}
 			cont, err := io.ReadAll(r)
+			if err != nil {
+				log.Fatal("Failed to read item", "error", err)
+			}
 
 			converter := md.NewConverter("", true, nil)
 			content, err := converter.ConvertString(string(cont))
