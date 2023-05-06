@@ -1,4 +1,4 @@
-# Book CLI
+# Book CLI [![Build](https://github.com/BetaPictoris/book/actions/workflows/build.yml/badge.svg)](https://github.com/BetaPictoris/book/actions/workflows/build.yml)
 
 Read epubs through the command line.
 
