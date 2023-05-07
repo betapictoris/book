@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/log"
-	"github.com/taylorskalyo/goreader/epub"
+	"github.com/urfave/cli/v2"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -16,12 +16,12 @@ import (
 	"github.com/knipferrc/teacup/statusbar"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/taylorskalyo/goreader/epub"
 )
 
 const useHighPerformanceRenderer = true
 
 var text string
-var mode = "read"
 
 // Bubble represents the properties of the UI.
 type Bubble struct {
@@ -128,17 +128,73 @@ func (b Bubble) footerView() string {
 }
 
 func main() {
-	fileName := ""
+	app := &cli.App{
+		Name:  "book",
+		Usage: "Read epubs on the command line.",
 
-	if len(os.Args) >= 2 {
-		fileName = os.Args[1]
-	} else {
-		log.Fatal("Usage: book <path to file>")
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "o",
+				Value: " ",
+				Usage: "output path when exporting",
+			},
+		},
+
+		Action: func(c *cli.Context) error {
+			if c.String("o") != " " {
+				exportMode(c.Args().First(), c.String("o"))
+			} else {
+				readMode(c.Args().First())
+			}
+			return nil
+		},
 	}
 
-	if mode == "read" {
-		readMode(fileName)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
 	}
+
+}
+
+func exportMode(inputFileName string, exportFileName string) {
+	log.Info("Reading file...")
+
+	reader, err := epub.OpenReader(inputFileName)
+	if err != nil {
+		log.Fatal("Failed to read", "error", err)
+	}
+	defer reader.Close() // Close the file when we are done with it
+	book := reader.Rootfiles[0]
+
+	log.Info("File read!", "title", book.Title)
+	log.Info("Parsing file...")
+
+	for _, item := range book.Manifest.Items {
+		if item.MediaType == "application/xhtml+xml" {
+			r, err := item.Open()
+			if err != nil {
+				log.Fatal("Failed to create item reader", "error", err)
+			}
+			cont, err := io.ReadAll(r)
+			if err != nil {
+				log.Fatal("Failed to read item", "error", err)
+			}
+
+			converter := md.NewConverter("", true, nil)
+			content, err := converter.ConvertString(string(cont))
+			if err != nil {
+				log.Fatal("Failed to parse book content", "error", err)
+			}
+
+			text += content
+		}
+	}
+
+	if err := os.WriteFile(exportFileName, []byte(text), 0666); err != nil {
+		log.Fatal("Failed to write to markdown", "error", err)
+	}
+
+	log.Info("File exported!")
 }
 
 func readMode(fileName string) {
