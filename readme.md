@@ -49,7 +49,18 @@ install -Dt ~/.local/bin -m 755 book
 ## Usage
 
 ```
-book <path to file>
+NAME:
+   book - Read epubs on the command line.
+
+USAGE:
+   book [global options] command [command options] [arguments...]
+
+COMMANDS:
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   -o value    output path when exporting (default: " ")
+   --help, -h  show help
 ```
 
 ---
