@@ -18,9 +18,10 @@ import (
 	md "github.com/JohannesKaufmann/html-to-markdown"
 )
 
-const useHighPerformanceRenderer = false
+const useHighPerformanceRenderer = true
 
 var text string
+var mode = "read"
 
 // Bubble represents the properties of the UI.
 type Bubble struct {
@@ -135,6 +136,12 @@ func main() {
 		log.Fatal("Usage: book <path to file>")
 	}
 
+	if mode == "read" {
+		readMode(fileName)
+	}
+}
+
+func readMode(fileName string) {
 	log.Info("Reading file...")
 
 	reader, err := epub.OpenReader(fileName)
