@@ -2,6 +2,9 @@
 
 Read epubs through the command line.
 
+> [!WARNING]
+> Book CLI is considered to be complete and archived. 
+
 [![Book CLI](https://cdn.ozx.me/betapictoris/book.svg)](https://github.com/BetaPictoris/book)
 
 ## Installation
